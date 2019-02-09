@@ -1,62 +1,39 @@
-var db = require('../db');
+var dbConnection = require('../db');
 
 module.exports = {
   messages: {
-    get: function () {
+    get: function (callback) {
       var queryString = 'SELECT * FROM messages';
-      var queryArgs = [];
+      // SELECT messages.message_text, messages.created_at, messages.id, users.user_name, rooms.room_name FROM messages
 
-      dbConnection.query(queryString, queryArgs, function (err, results) {
-        if (err) {
-          console.log('error==================>', err);
-          // res.sendStatus(404);
-        } else {
-          console.log('SUCCESS withing GET MESSAGE');
-          // res.status(200).json({});
-        }
-      }
-      );
+      dbConnection.query(queryString, callback);
     }, // a function which produces all the messages
-    post: function (message) {
-      var query = dbConnection.query('INSERT INTO messages (message_text) VALUES ?', message, function (error, results, fields) {
-        if (error) {
-          throw error;
-        } else {
-          console.log('SUCCESS within POST MESSAGE');
-          // Neat!
-          // res.status(201).json({objectId, createdAt}});
-        }
-      });
+
+    post: function (message, callback) {
+      // console.log('*****************message', message);
+      // console.log('**********message.message', message.message);
+      // console.log('***************created_at', created_at);
+      // message = {
+      //   created_at: '1234',
+      //   message_text: message.message
+      // };
+      console.log('*****************message', message);
+      console.log('*****************message', typeof message);
+
+      dbConnection.query('INSERT INTO messages SET ?', message, callback);
     } // a function which can be used to insert a message into the database
   },
 
   users: {
     // Ditto as above.
-    get: function () {
+    get: function (callback) {
       var queryString = 'SELECT * FROM users';
-      var queryArgs = [];
 
-      dbConnection.query(queryString, queryArgs, function (err, results) {
-        if (err) {
-          console.log('error==================>', err);
-          // res.sendStatus(404);
-        } else {
-          console.log('SUCCESS within GET USER');
-          // res.status(200).json({});
-        }
-      }
-      );
+      dbConnection.query(queryString, callback);
     },
-    post: function (user) {
-      var query = dbConnection.query('INSERT INTO users (user_name) VALUES ?', user, function (error, results, fields) {
-        if (error) {
-          throw error;
-        } else {
-          console.log('SUCCESS within POST USER');
-          // Neat!
-          // res.status(201).json({objectId, createdAt}});
-        }
-      });
+
+    post: function (user, callback) {
+      dbConnection.query('INSERT INTO users SET ?', user, callback);
     }
   }
 };

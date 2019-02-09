@@ -17,6 +17,7 @@ CREATE TABLE messages (
   message_text TEXT,
   user_id INTEGER,
   room_id INTEGER,
+  created_at TEXT,
   FOREIGN KEY(user_id) REFERENCES users(id),
   FOREIGN KEY(room_id) REFERENCES rooms(id)
 );
@@ -25,3 +26,14 @@ CREATE TABLE messages (
  *    mysql -u root < server/schema.sql
  *  to create the database and the tables.*/
 
+-- INSERT INTO messages (user_id, room_id, message_text, created_at) VALUES (
+--   (SELECT id FROM users WHERE user_name = 'mike'),
+--   (SELECT id FROM rooms WHERE room_name = 'kitchen'),
+--   'Help!',
+--   '911');
+
+--  INSERT INTO messages (user_id, room_id, message_text, created_at) VALUES (
+--   (SELECT id FROM users WHERE user_name = 'jamal'),
+--   (SELECT id FROM rooms WHERE room_name = 'bedroom'),
+--   'A whole different Help!',
+--   '911911');
