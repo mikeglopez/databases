@@ -7,19 +7,11 @@ CREATE TABLE users (
   user_name TEXT NOT NULL
 );
 
-CREATE TABLE rooms (
-  id INTEGER PRIMARY KEY NOT NULL AUTO_INCREMENT,
-  room_name TEXT NOT NULL
-);
-
 CREATE TABLE messages (
   id INTEGER PRIMARY KEY NOT NULL AUTO_INCREMENT,
   message_text TEXT,
-  user_id INTEGER,
-  room_id INTEGER,
-  created_at TEXT,
-  FOREIGN KEY(user_id) REFERENCES users(id),
-  FOREIGN KEY(room_id) REFERENCES rooms(id)
+  user_name TEXT,
+  room_name TEXT
 );
 
 /*  Execute this file from the command line by typing:
@@ -32,8 +24,12 @@ CREATE TABLE messages (
 --   'Help!',
 --   '911');
 
---  INSERT INTO messages (user_id, room_id, message_text, created_at) VALUES (
---   (SELECT id FROM users WHERE user_name = 'jamal'),
---   (SELECT id FROM rooms WHERE room_name = 'bedroom'),
+--  INSERT INTO messages (user_id, message_text, created_at) VALUES (
+--   (SELECT id FROM users WHERE user_name = 'Jamal'),
 --   'A whole different Help!',
 --   '911911');
+
+  -- CREATE TABLE rooms (
+--   id INTEGER PRIMARY KEY NOT NULL AUTO_INCREMENT,
+--   room_name TEXT NOT NULL
+-- );

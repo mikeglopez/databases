@@ -2,30 +2,34 @@ var dbConnection = require('../db');
 
 module.exports = {
   messages: {
+    // a function which produces all the messages
     get: function (callback) {
       var queryString = 'SELECT * FROM messages';
-      // SELECT messages.message_text, messages.created_at, messages.id, users.user_name, rooms.room_name FROM messages
 
       dbConnection.query(queryString, callback);
-    }, // a function which produces all the messages
+    },
 
+    // a function which can be used to insert a message into the database
     post: function (message, callback) {
-      // console.log('*****************message', message);
-      // console.log('**********message.message', message.message);
-      // console.log('***************created_at', created_at);
-      // message = {
-      //   created_at: '1234',
-      //   message_text: message.message
-      // };
-      console.log('*****************message', message);
-      console.log('*****************message', typeof message);
+      dbConnection.query('INSERT INTO messages SET ?', message, function(err, results) {
+        if (err) {
+          callback(err, null);
+        } else {
+          callback(null, results);
+        }
+      });
 
-      dbConnection.query('INSERT INTO messages SET ?', message, callback);
-    } // a function which can be used to insert a message into the database
+      /*
+       INSERT INTO messages (user_id, message_text, created_at) SET (
+        (SELECT id FROM users WHERE user_name = 'Jamal'),
+        'A whole different Help!',
+        '911911');
+      */
+    }
   },
 
+  // Ditto as above.
   users: {
-    // Ditto as above.
     get: function (callback) {
       var queryString = 'SELECT * FROM users';
 
@@ -33,7 +37,15 @@ module.exports = {
     },
 
     post: function (user, callback) {
-      dbConnection.query('INSERT INTO users SET ?', user, callback);
+      dbConnection.query('INSERT INTO users SET ?', user, function(err, results) {
+        if (err) {
+          callback(err, null);
+        } else {
+          callback(null, results);
+        }
+      });
+
+      // after you finish inoke the post function of messages
     }
   }
 };
