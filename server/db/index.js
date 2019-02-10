@@ -1,16 +1,17 @@
-var mysql = require('mysql');
+var Sequelize = require('sequelize');
 var pwd = require('../spec/login.js');
 
-// Create a database connection and export it from this file.
-// You will need to connect with the user "root", no password,
-// and to the database "chat".
-
-var dbConnection = mysql.createConnection({
-  user: 'root',
-  password: pwd.PASSWORD,
-  database: 'chat'
+var dbConnection = new Sequelize('chat', 'root', pwd.PASSWORD, {
+  host: 'localhost',
+  dialect: 'mysql',
+  logging: false,
+  pool: {
+    max: 10,
+    min: 2,
+    idle: 10000
+  }
 });
 
-dbConnection.connect();
+dbConnection.sync();
 
 module.exports = dbConnection;
