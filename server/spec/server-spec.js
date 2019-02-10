@@ -28,39 +28,55 @@ describe('Persistent Node Chat Server', function () {
     dbConnection.end();
   });
 
-  it('Should insert posted messages to the DB', function (done) {
+  it('Should insert posted users to the DB', function (done) {
     // Post the user to the chat server.
     request({
       method: 'POST',
       uri: 'http://127.0.0.1:3000/classes/users',
       json: { user_name: 'Valjean' }
     }, function () {
-      // Post a message to the node chat server:
-      request({
-        method: 'POST',
-        uri: 'http://127.0.0.1:3000/classes/messages',
-        json: {
-          user_name: 'Valjean',
-          message_text: 'In mercy\'s name, three days is all I need.',
-          room_name: 'Hello'
-        }
-      }, function () {
-        // Now if we look in the database, we should find the
-        // posted message there.
+      var queryString = 'SELECT * FROM users';
+      var queryArgs = [];
 
-        // TODO: You might have to change this test to get all the data from
-        // your message table, since this is schema-dependent.
-        var queryString = 'SELECT * FROM messages';
-        var queryArgs = [];
+      dbConnection.query(queryString, queryArgs, function (err, results) {
+        // Should have one result:
+        expect(results.length).to.equal(1);
 
-        dbConnection.query(queryString, queryArgs, function (err, results) {
-          // Should have one result:
-          expect(results.length).to.equal(1);
+        // TODO: If you don't have a column named text, change this test.
+        expect(results[0].user_name).to.equal('Valjean');
+        done();
+      });
+    });
+  });
 
-          // TODO: If you don't have a column named text, change this test.
-          expect(results[0].message_text).to.equal('In mercy\'s name, three days is all I need.');
-          done();
-        });
+  it('Should insert posted messages to the DB', function (done) {
+    // Post the user to the chat server.
+    request({
+      method: 'POST',
+      uri: 'http://127.0.0.1:3000/classes/messages',
+      json: {
+        user_name: 'Valjean',
+        message_text: 'In mercy\'s name, three days is all I need.',
+        room_name: 'Hello'
+      }
+    }, function () {
+      // Now if we look in the database, we should find the
+      // posted message there.
+
+      // TODO: You might have to change this test to get all the data from
+      // your message table, since this is schema-dependent.
+      var queryString = 'SELECT * FROM messages';
+      var queryArgs = [];
+
+      dbConnection.query(queryString, queryArgs, function (err, results) {
+        // Should have one result:
+        expect(results.length).to.equal(1);
+
+        // TODO: If you don't have a column named text, change this test.
+        expect(results[0].user_name).to.equal('Valjean');
+        expect(results[0].message_text).to.equal('In mercy\'s name, three days is all I need.');
+        expect(results[0].room_name).to.equal('Hello');
+        done();
       });
     });
   });
@@ -89,11 +105,43 @@ describe('Persistent Node Chat Server', function () {
         // the message we just inserted:
         request('http://127.0.0.1:3000/classes/messages', function (error, response, body) {
           var messageLog = JSON.parse(body);
+          expect(messageLog[0].user_name).to.equal('Valjean');
           expect(messageLog[0].message_text).to.equal('Men like you can never change!');
           expect(messageLog[0].room_name).to.equal('main');
           done();
         });
       });
     });
+  });
+
+  it('Should output all users from the DB', function (done) {
+    var queryString = 'SELECT * FROM users';
+    var queryArgs = [];
+
+    request({
+      method: 'POST',
+      uri: 'http://127.0.0.1:3000/classes/users',
+      json: {
+        user_name: 'Valjean'
+      }
+    }, request({
+      method: 'POST',
+      uri: 'http://127.0.0.1:3000/classes/users',
+      json: {
+        user_name: 'Rupa'
+      }
+    }, function () {
+      dbConnection.query(queryString, queryArgs, function (err) {
+        if (err) { throw err; }
+
+        request('http://127.0.0.1:3000/classes/users', function (error, response, body) {
+          var messageLog = JSON.parse(body);
+          expect(messageLog.length).to.equal(2);
+          expect(messageLog[0].user_name).to.equal('Valjean');
+          expect(messageLog[1].user_name).to.equal('Rupa');
+          done();
+        });
+      });
+    }));
   });
 });
