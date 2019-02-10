@@ -12,6 +12,19 @@ var dbConnection = new Sequelize('chat', 'root', pwd.PASSWORD, {
   }
 });
 
+var User = dbConnection.define('users', {
+  username: Sequelize.STRING
+});
+
+var Message = dbConnection.define('messages', {
+  text: Sequelize.STRING,
+  username: Sequelize.STRING,
+  roomname: Sequelize.STRING
+});
+
 dbConnection.sync();
 
-module.exports = dbConnection;
+module.exports = {
+  Message,
+  User
+};
