@@ -1,5 +1,6 @@
 var express = require('express');
 var db = require('./db');
+var cors = require('cors');
 
 // Middleware
 var morgan = require('morgan');
@@ -13,6 +14,9 @@ module.exports.app = app;
 
 // Set what we are listening on.
 app.set('port', 3000);
+
+// Enable cross orgin requests.
+app.use(cors());
 
 // Logging and parsing
 app.use(morgan('dev'));

@@ -8,7 +8,7 @@ module.exports = {
         if (err) {
           res.sendStatus(404);
         } else {
-          res.status(200).json(results);
+          res.status(200).json({results});
         }
       });
     },

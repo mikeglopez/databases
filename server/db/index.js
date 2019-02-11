@@ -19,7 +19,8 @@ var User = dbConnection.define('users', {
 var Message = dbConnection.define('messages', {
   text: Sequelize.STRING,
   username: Sequelize.STRING,
-  roomname: Sequelize.STRING
+  roomname: Sequelize.STRING,
+  objectId: { type: Sequelize.INTEGER, autoIncrement: true, primaryKey: true }
 });
 
 dbConnection.sync();
